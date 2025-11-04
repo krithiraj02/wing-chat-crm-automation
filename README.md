@@ -1,192 +1,172 @@
-# ✅ Wing Chat – Conversation → CRM Automation
+Wing Chat CRM – Cypress E2E Automation
 
-This repository contains automated tests validating:
+This repository contains end-to-end automation test cases for Wing Chat CRM, covering UI + API flows using Cypress.
+The goal is to validate lead intake, CRM record updates, and cross-system data consistency.
 
-> **Lead intake via Chat Agent → CRM conversation record creation**
+✅ Tech Stack
 
-Built using **Cypress (API + UI)**.
+Cypress
 
----
+Node.js
 
-## ✅ Scope
+JavaScript
 
-Covers the required 4 scenarios:
+dotenv
 
-1) ✅ Happy Path – Create conversation → Validate CRM  
-2) ✅ Negative case – invalid data / missing inputs  
-3) ✅ Edge cases – long message, special characters, rapid sends  
-4) ✅ UI ↔ API cross-check  
+GitHub Actions (CI)
 
-Additional features:
-- Token generation via Supabase
-- Cleanup of created conversation data
-- Multiple retries for CRM propagation
+✅ Folder Structure
+wing-chat-crm-automation
+│
+├── cypress
+│   ├── e2e
+│   │   ├── tc_001_happy_path.cy.js
+│   │   ├── tc_002_negative_scenario_invalid_data.cy.js
+│   │   ├── tc_003_edge_case_scenario_with_long_message.cy.js
+│   │   └── tc_004_ui_api_cross_check.cy.js
+│   ├── fixtures
+│   ├── support
+│
+├── .github/workflows/ci.yml     → CI config
+├── cypress.config.js
+├── package.json
+└── README.md
 
----
+✅ Test Scenarios
+ID	Scenario	Status
+TC-001	Happy path – Chat intake → validate CRM entry	✅
+TC-002	Invalid data form submission	✅
+TC-003	Edge case – long message input	✅
+TC-004	UI → API data cross-validation	✅
+✅ Environment Variables
 
-## ✅ Folder Structure
+The following values must be available before running tests:
 
-project/
-├─ cypress/
-│ ├─ e2e/
-│ │ ├─ tc_001_happy_path.cy.js
-│ │ ├─ tc_002_negative_scenario.cy.js
-│ │ ├─ tc_003_edge_cases.cy.js
-│ │ └─ tc_004_ui_api_cross_check.cy.js
-│ ├─ fixtures/
-│ ├─ support/
-│ │ ├─ commands.js
-│ │ ├─ e2e.js
-│ │ └─ helpers.js
-├─ .github/
-│ └─ workflows/
-│ └─ ci.yml
-├─ .env.example
-├─ cypress.config.js
-├─ package.json
-└─ README.md
+Key	Description
+WING_URL	Base URL
+WING_USERNAME	CRM username
+WING_PASSWORD	CRM password
+WING_TOKEN	(If required) auth token
+✅ Local Usage — .env
+
+Create a .env file and add:
+
+WING_URL=https://test.wing.work
+WING_USERNAME=<username>
+WING_PASSWORD=<password>
+WING_TOKEN=<token>
 
 
----
+✅ .env is ignored from Git for security.
 
-## ✅ 1) Setup Instructions
+✅ Install & Run
+1) Clone repo
+git clone <repo-url>
+cd wing-chat-crm-automation
 
-### Clone repo
-```bash
-git clone <REPO_URL>
-cd project
+2) Install
 npm install
 
-
-Create .env
-cp .env.example .env
-
-Fill values inside .env:
-
-WING_URL=
-WING_USERNAME=
-WING_PASSWORD=
-SUPABASE_URL=
-SUPABASE_KEY=
-⚠️ Do NOT commit .env
-Cypress reads env variables via process.env.*
-
-✅ 2) Running Tests Locally
-Headless mode
-npx cypress run --headless
-
-UI Mode
+3) Run tests (headed)
 npx cypress open
 
+4) Run tests (headless)
+npm run test
 
-Screenshots + Videos (on failure):
+✅ CI Execution (GitHub Actions)
 
-cypress/screenshots
-cypress/videos
+Tests run automatically on:
+✅ Any push
+✅ Any pull request
 
-✅ 3) Running in CI (GitHub Actions)
-
-Workflow file:
+CI file:
 
 .github/workflows/ci.yml
 
 
-Steps performed:
+Artifacts uploaded on failure:
+✅ Cypress screenshots
+✅ Cypress videos (optional)
 
-Install dependencies
+Required GitHub Secrets:
 
-Run Cypress (headless)
-
-Set secrets in:
-
-GitHub → Settings → Secrets → Actions
-
-
-Required secrets:
+WING_URL
 
 WING_USERNAME
+
 WING_PASSWORD
-SUPABASE_URL
-SUPABASE_KEY
 
-✅ 4) Environment Variables
-Key	Purpose
-WING_URL	Base web app URL
-WING_USERNAME	Login user
-WING_PASSWORD	Login password
-SUPABASE_URL	Token generation
-SUPABASE_KEY	Token generation
-✅ 5) Cleanup
+WING_TOKEN
 
-Tests delete created conversations:
-
-DELETE /conversations/:id
-
-
-✅ Idempotent — if record missing → still OK
-
-✅ 6) Design Choices
+✅ Short Note — Design Choices
 ✅ Selector Strategy
 
-Use visible + stable selectors
+Used stable selectors like data-testid, role, and text
 
-Prefer text or placeholder-based selection
+Avoided fragile CSS and nth-child selectors
 
-Avoid dynamic locators
+Ensures tests remain stable during UI styling changes
 
-✅ Wait / Retry Strategy
+✅ Wait Strategy
 
-Cypress auto-retry for UI
+Relied on Cypress auto-retry
 
-Explicit waits only for CRM → UI sync
+Used cy.intercept() + waits for network sync
 
-CRM → API polling up to ~30 sec
+Minimal use of cy.wait() → only for controlled async cases
+
+✅ Flakiness Mitigation
+
+Tests are isolated and independent
+
+Avoided chaining too many UI waits
+
+Assertions added after DOM/API sync
+
+Stable selectors → fewer flaky failures
 
 ✅ Test Data Strategy
 
-Use unique timestamps
+Sensitive credentials via env vars
 
-Clean data post-run (after hooks)
+Static reusable payloads via fixtures
 
-API used to validate correctness
+No hard-coded credentials
 
-Why Cypress?
+Helper reused for login
 
-UI + API together
+✅ Structure & Naming
 
-Auto retry
+File naming format:
 
-Screenshots/video
+tc_<number>_<description>.cy.js
 
-Easy CI integration
 
-✅ 7) Test Scenarios Covered
-Test Case	Description
-TC-001	Happy path
-TC-002	Negative case
-TC-003	Edge cases
-TC-004	UI ↔ API validation
-✅ 8) Commands Included
-Command	Purpose
-cy.login()	UI Login
-getAuthToken()	Token retrieval via Supabase
-cleanup in after()	Deletes created conversation
-✅ 9) How to Extend
+✅ Improves readability & reporting
+✅ Easy grouping when scaling test suite
 
-Validate webhook triggers
+✅ Known Limitations
 
-Multi-agent assignment checks
+Tests require valid credentials to fully pass
 
-Conversation tagging rules
+CI may fail without valid tokens/credentials
 
-✅ 10) Notes
+Data cleanup may be required for repeat runs
 
-.env.example included
+✅ How to Extend
 
-.env not committed
+Add parallel execution
 
-CI runs on every push
+Add dashboard reporting
 
-Runs in headless mode
+Expand fixture-based data strategy
 
-Supabase token for auth
+Add more business-workflow case coverage
+
+✅ Conclusion
+
+This automation suite:
+✅ Covers primary user journeys
+✅ Validates UI + API sync
+✅ Uses stable selectors + retry logic
+✅ Designed to be maintainable, scalable, and CI-ready
