@@ -2,35 +2,38 @@ name: Cypress Tests
 
 on:
   push:
-    branches: [ "winge2e_assessment", "main" ]
+    branches: [ "winge2e_assessment" ]
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v4
+      - name: Use Node
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Set env
-        run: |
-          echo WING_URL=${{ secrets.WING_URL }} >> $GITHUB_ENV
-          echo WING_USERNAME=${{ secrets.WING_USERNAME }} >> $GITHUB_ENV
-          echo WING_PASSWORD=${{ secrets.WING_PASSWORD }} >> $GITHUB_ENV
-          echo SUPABASE_URL=${{ secrets.SUPABASE_URL }} >> $GITHUB_ENV
-          echo SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} >> $GITHUB_ENV
-
-      # ✅ ADD THIS BLOCK HERE
+      # ✅ Add this
       - name: Debug ENV
         run: |
           echo "WING_URL = $WING_URL"
-      # ✅ END
+          echo "WING_USERNAME = $WING_USERNAME"
+          echo "WING_PASSWORD exists? -> ${{ secrets.WING_PASSWORD != '' }}"
+          echo "SUPABASE_URL = $SUPABASE_URL"
+          echo "SUPABASE_KEY exists? -> ${{ secrets.SUPABASE_KEY != '' }}"
 
-      - name: Run tests
-        run: npx cypress run --headless
+      - name: Run Cypress
+        run: npx cypress run
+        env:
+          WING_URL: ${{ secrets.WING_URL }}
+          WING_USERNAME: ${{ secrets.WING_USERNAME }}
+          WING_PASSWORD: ${{ secrets.WING_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
