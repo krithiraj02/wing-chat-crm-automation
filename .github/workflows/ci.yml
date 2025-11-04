@@ -2,7 +2,7 @@ name: Cypress Tests
 
 on:
   push:
-    branches: [ "winge2e_assessment" ]
+    branches: [ "winge2e_assessment", "main" ]
 
 jobs:
   cypress-run:
@@ -25,6 +25,12 @@ jobs:
           echo WING_PASSWORD=${{ secrets.WING_PASSWORD }} >> $GITHUB_ENV
           echo SUPABASE_URL=${{ secrets.SUPABASE_URL }} >> $GITHUB_ENV
           echo SUPABASE_KEY=${{ secrets.SUPABASE_KEY }} >> $GITHUB_ENV
+
+      # ✅ ADD THIS BLOCK HERE
+      - name: Debug ENV
+        run: |
+          echo "WING_URL = $WING_URL"
+      # ✅ END
 
       - name: Run tests
         run: npx cypress run --headless
