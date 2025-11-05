@@ -1,4 +1,4 @@
-import { getAuthToken } from "../support/helpers";
+import { getAuthToken } from "../../support/helpers";
 
 describe("Negative Scenarios – Conversation API", () => {
 

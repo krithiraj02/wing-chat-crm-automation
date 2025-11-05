@@ -1,4 +1,4 @@
-import { getAuthToken } from "../support/helpers";
+import { getAuthToken } from "../../support/helpers";
 
 describe("TC-003 – Edge Case Tests", () => {
   const workspace_id = "e6d745de-8393-451b-831f-9746e53fdfdb";

@@ -1,4 +1,4 @@
-import { getAuthToken } from "../support/helpers";
+import { getAuthToken } from "../../support/helpers";
 
 describe("TC-004 – UI <-> API Cross-Validation", () => {
   const workspace_id = "e6d745de-8393-451b-831f-9746e53fdfdb";

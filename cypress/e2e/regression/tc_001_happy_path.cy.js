@@ -1,4 +1,4 @@
-import { getAuthToken } from "../support/helpers";
+import { getAuthToken } from "../../support/helpers";
 
 let conversationId;   // ⬅️ store globally for cleanup
 let token;

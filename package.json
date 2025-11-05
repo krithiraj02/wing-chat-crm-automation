@@ -1,16 +1,27 @@
 {
   "name": "wing-e2e",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cypress run",
+    "regression": "cypress run --browser chrome && npm run merge-report",
+    "open": "cypress open",
+    "merge-report": "marge cypress/reports/*.json --reportDir cypress/reports --inline"
+    
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "cypress": "^14.5.4"
+    "@shelex/cypress-allure-plugin": "^2.41.2",
+    "allure-commandline": "^2.34.1",
+    "cypress": "^14.5.4",
+    "marge": "^1.0.1",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0"
   },
   "dependencies": {
     "dotenv": "^17.2.3"
